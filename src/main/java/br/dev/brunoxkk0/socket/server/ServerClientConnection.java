@@ -1,10 +1,11 @@
 package br.dev.brunoxkk0.socket.server;
 
+import br.dev.brunoxkk0.socket.http.HTTPProtocol;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 //Conexão do cliente com o servidor (Reponsável por processador a comunicação com o cliente do lado do servidor)
@@ -23,6 +24,8 @@ public class ServerClientConnection implements Runnable {
     //BufferedOutputStream, esta classe é utilizada para fazer saida de dados
     //CLIENTE --> SERVIDOR (é nessa output stream que escrevemos os dados);
     private final BufferedOutputStream bufferedOutputStream;
+
+    private BufferedReader reader;
 
     public ServerClientConnection(Socket socket) throws IOException {
 
@@ -51,7 +54,7 @@ public class ServerClientConnection implements Runnable {
             //O Charset é utilizado para garantir que os carateres lidos estejam na codificação correta.
             //
             //Leitor com buffer                        |Leitor de InputStream   |InputStream da conexão. |Chatset
-            BufferedReader reader = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
+            reader = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
 
 
             // vamos esperar até ele ficar pronto
@@ -74,7 +77,8 @@ public class ServerClientConnection implements Runnable {
                 //
                 // Além disso, podemos reaproveitar para ler algo mais que esteja no buffer,
                 // como por emxemplo uma imagem ou algo parecido.
-                lines = readUpTo(reader, "\0");
+                lines = readUpTo(reader, HTTPProtocol.BLANK_LINE);
+                //Usando line break do http
             }
 
             LOGGER.info("Mensagem recebida: " + lines);
@@ -91,7 +95,7 @@ public class ServerClientConnection implements Runnable {
                 // Podemos então chamar nossa função para processar os dados recebidos e enviar uma resposta
                 // o método processarDados faz esse processamento e devolve a saida para a conexão.
 
-                processData(lines, bufferedWriter);
+                HTTPProtocol.processData(lines, bufferedWriter, this);
 
             }
 
@@ -122,7 +126,11 @@ public class ServerClientConnection implements Runnable {
 
     }
 
-    public ArrayList<String> readUpTo(BufferedReader input, String breakPoint) throws IOException {
+    public ArrayList<String> readUpTo(String breakPoint) throws IOException {
+        return readUpTo(reader, breakPoint);
+    }
+
+    private ArrayList<String> readUpTo(BufferedReader input, String breakPoint) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
 
         String line;
@@ -131,19 +139,6 @@ public class ServerClientConnection implements Runnable {
         }
 
         return lines;
-    }
-
-    public void processData(List<String> lines, BufferedWriter output) throws IOException {
-
-        //Podemos fazer um simples código para simplesmente responder à mensagem enviada
-        //transformando todos os caracteres em Maiúsculo
-        for (String line : lines) {
-
-            //Escrevendo na saída da conexão, o conteudo da linha em maíusculo.
-            output.write(line.toUpperCase());
-
-        }
-
     }
 
 }
