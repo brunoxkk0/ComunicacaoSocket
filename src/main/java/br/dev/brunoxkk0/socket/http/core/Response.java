@@ -27,7 +27,7 @@ public class Response {
 
     public void writeHeaders(HashMap<String, String> headers) throws IOException {
         for(String key : headers.keySet()){
-            bufferedWriter.write(String.format("%s%s%s", key, headers.get(key), HTTPProtocol.LINE_BREAK));
+            bufferedWriter.write(String.format("%s:%s%s", key, headers.get(key), HTTPProtocol.LINE_BREAK));
         }
     }
 

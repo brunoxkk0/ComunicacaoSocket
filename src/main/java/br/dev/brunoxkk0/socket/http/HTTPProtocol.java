@@ -19,7 +19,6 @@ public class HTTPProtocol {
     public static void processData(List<String> lines, BufferedWriter output, ServerClientConnection serverClientConnection) throws IOException {
 
         if(!lines.isEmpty()){
-
             String[] methodAndTargetAndVersion = lines.get(0).split(" ", 3);
 
             String method = methodAndTargetAndVersion[0];
@@ -75,8 +74,6 @@ public class HTTPProtocol {
 
         int index = target.indexOf('?');
 
-        System.out.println(index);
-
         if(index != -1){
 
             String targetParams = target.substring(index + 1);
@@ -100,6 +97,9 @@ public class HTTPProtocol {
 
     public static void handle(Request request, Response response) throws IOException {
 
+        System.out.println(request);
+        System.out.println(request.bodyAsText());
+
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("Server", "TestTCP");
@@ -117,6 +117,7 @@ public class HTTPProtocol {
                     </head>
                     <body>
                         <h3>Olá Mundo! <br>User Agent: %s</h3>
+                        <h5 style='color: green;'>Flw mundo</h5>
                     </body>
                 </html>""", request.getHeaders().get("User-Agent"))
         );
