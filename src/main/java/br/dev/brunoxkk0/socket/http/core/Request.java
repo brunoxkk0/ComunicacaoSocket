@@ -1,6 +1,5 @@
 package br.dev.brunoxkk0.socket.http.core;
 
-import br.dev.brunoxkk0.socket.http.HTTPProtocol;
 import br.dev.brunoxkk0.socket.server.ServerClientConnection;
 
 import java.util.HashMap;
@@ -45,10 +44,14 @@ public class Request {
     }
 
     public String bodyAsText(){
+
+        int length = Integer.parseInt(headers.getOrDefault("Content-Length", "-1"));
+
         try{
-            return String.join("", serverClientConnection.readUpTo(HTTPProtocol.LINE_BREAK));
+            return String.join("", serverClientConnection.readContentAsText(length));
         }catch (Exception ignored){}
-        return null;
+
+        return "";
     }
 
     @Override

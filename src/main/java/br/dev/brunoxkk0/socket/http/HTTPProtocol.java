@@ -13,8 +13,8 @@ import java.util.List;
 public class HTTPProtocol {
 
     public static final String VERSION = "HTTP/1.1";
-    public static final String LINE_BREAK = "\r\n";
-    public static final String BLANK_LINE = "";
+    public static final String LINE_BREAK = "\r\n"; // Write
+    public static final String BLANK_LINE = ""; // Read
 
     public static void processData(List<String> lines, BufferedWriter output, ServerClientConnection serverClientConnection) throws IOException {
 
@@ -26,8 +26,12 @@ public class HTTPProtocol {
             String target = methodAndTargetAndVersion[1];
             String version = methodAndTargetAndVersion[2];
 
+            Response response = new Response(output, serverClientConnection);
+
             if(!version.equalsIgnoreCase(HTTPProtocol.VERSION)){
-                //TODO: Opa, isso não é compatível com nosso servidor.
+                response.writeStatus(StatusCode.HTTP_VERSION_NOT_SUPPORTED);
+                response.blankLine();
+                return;
             }
 
             HashMap<String, String> params = loadParams(target);
@@ -41,7 +45,6 @@ public class HTTPProtocol {
             HashMap<String, String> headers = loadHeaders(rawHeaders);
 
             Request request = new Request(method, target, params, version, headers, serverClientConnection);
-            Response response = new Response(output, serverClientConnection);
 
             HTTPProtocol.handle(request, response);
 
@@ -96,8 +99,28 @@ public class HTTPProtocol {
 
 
     public static void handle(Request request, Response response) throws IOException {
-        System.out.println(request);
-        response.writeStatus(StatusCode.NOT_IMPLEMENTED);
+
+        HashMap<String, String> headers = new HashMap<>();
+
+        headers.put("Server", "TestTCP");
+        headers.put("Content-Type", "text/html");
+
+        response.writeStatus(StatusCode.OK);
+        response.writeHeaders(headers);
+
+        response.blankLine();
+
+        response.write(String.format("""
+                <html>
+                    <head>
+                        <meta charset="UTF-8"/>
+                    </head>
+                    <body>
+                        <h3>Olá Mundo! <br>User Agent: %s</h3>
+                    </body>
+                </html>""", request.getHeaders().get("User-Agent"))
+        );
+
         response.blankLine();
     }
 

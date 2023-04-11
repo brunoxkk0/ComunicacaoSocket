@@ -5,6 +5,7 @@ import br.dev.brunoxkk0.socket.server.ServerClientConnection;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Response {
 
@@ -24,6 +25,12 @@ public class Response {
         return serverClientConnection;
     }
 
+    public void writeHeaders(HashMap<String, String> headers) throws IOException {
+        for(String key : headers.keySet()){
+            bufferedWriter.write(String.format("%s%s%s", key, headers.get(key), HTTPProtocol.LINE_BREAK));
+        }
+    }
+
     public void write(String data) throws IOException {
         bufferedWriter.write(String.format("%s%s", data, HTTPProtocol.LINE_BREAK));
     }
@@ -31,7 +38,6 @@ public class Response {
     public void blankLine() throws IOException {
         bufferedWriter.write(HTTPProtocol.LINE_BREAK);
     }
-
 
     public void writeStatus(StatusCode status) throws IOException {
         write(String.format("%s %d %s", HTTPProtocol.VERSION, status.getCode(), status.getMessage()));

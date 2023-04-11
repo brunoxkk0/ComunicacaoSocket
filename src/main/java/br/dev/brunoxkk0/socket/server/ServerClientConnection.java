@@ -76,7 +76,7 @@ public class ServerClientConnection implements Runnable {
                 // o padrão http faz algo parecido utilizando \r\n para delimitar o fim
                 //
                 // Além disso, podemos reaproveitar para ler algo mais que esteja no buffer,
-                // como por emxemplo uma imagem ou algo parecido.
+                // como, por exemplo, uma imagem ou algo parecido.
                 lines = readUpTo(reader, HTTPProtocol.BLANK_LINE);
                 //Usando line break do http
             }
@@ -140,5 +140,24 @@ public class ServerClientConnection implements Runnable {
 
         return lines;
     }
+
+    public String readContentAsText(int contentLength) throws IOException {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        char[] buffer = new char[4096];
+
+        int leftToRead = contentLength;
+        int toReadNextLoop = Math.min(leftToRead, buffer.length);
+
+        int read;
+        while (toReadNextLoop > 0 && (read = reader.read(buffer, 0, toReadNextLoop)) != -1) {
+            stringBuilder.append(buffer, 0, read);
+            leftToRead -= read;
+            toReadNextLoop = Math.min(leftToRead, buffer.length);
+        }
+
+        return stringBuilder.toString();
+    }
+
 
 }

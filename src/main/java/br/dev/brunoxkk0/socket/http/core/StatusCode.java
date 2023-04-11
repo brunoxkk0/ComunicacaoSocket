@@ -4,7 +4,8 @@ public enum StatusCode {
 
     OK(200, "OK"),
     NOT_FOUND(404, "Not Found"),
-    NOT_IMPLEMENTED(501, "Not Implemented");
+    NOT_IMPLEMENTED(501, "Not Implemented"),
+    HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported");
 
     private final int code;
     private final String message;
