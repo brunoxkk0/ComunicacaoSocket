@@ -19,6 +19,7 @@ public class HTTPProtocol {
     public static void processData(List<String> lines, BufferedWriter output, ServerClientConnection serverClientConnection) throws IOException {
 
         if(!lines.isEmpty()){
+
             String[] methodAndTargetAndVersion = lines.get(0).split(" ", 3);
 
             String method = methodAndTargetAndVersion[0];
@@ -111,6 +112,7 @@ public class HTTPProtocol {
         response.blankLine();
 
         response.write(String.format("""
+                <!DOCTYPE html>
                 <html>
                     <head>
                         <meta charset="UTF-8"/>
