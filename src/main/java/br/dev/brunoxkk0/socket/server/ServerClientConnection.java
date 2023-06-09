@@ -53,11 +53,11 @@ public class ServerClientConnection implements Runnable {
             //Leitor com buffer                        |Leitor de InputStream   |InputStream da conexão. |Chatset
             BufferedReader reader = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
 
-
+            // Corrigindo bug das Threads ficarem presas.
             // vamos esperar até ele ficar pronto
             // ! podemos utilizando um sleep, para fazer ele esperar e diminuir a quantia de chamadas !
-            while (!reader.ready())
-                Thread.sleep(100);
+            //while (!reader.ready())
+            //    Thread.sleep(100);
 
 
             LOGGER.info("Leitor pronto para ler os dados...");
