@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Principal {
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server(9797, 4);
+        Server server = new Server(9797, 16);
         server.listen();
     }
 

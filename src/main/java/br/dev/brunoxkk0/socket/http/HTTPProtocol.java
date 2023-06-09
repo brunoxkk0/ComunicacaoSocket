@@ -1,5 +1,6 @@
 package br.dev.brunoxkk0.socket.http;
 
+import br.dev.brunoxkk0.socket.crud.Crud;
 import br.dev.brunoxkk0.socket.http.core.Request;
 import br.dev.brunoxkk0.socket.http.core.Response;
 import br.dev.brunoxkk0.socket.http.core.StatusCode;
@@ -57,9 +58,7 @@ public class HTTPProtocol {
         HashMap<String, String> headers = new HashMap<>();
 
         for(String ln : list){
-
             String[] parts = ln.split(":", 2);
-
             if(parts.length == 2){
                 headers.put(parts[0], parts[1].trim());
             }
@@ -79,7 +78,6 @@ public class HTTPProtocol {
 
             String targetParams = target.substring(index + 1);
             String[] paramsAndValues = targetParams.split("&");
-
             for(String ln : paramsAndValues){
 
                 String[] parts = ln.split("=", 2);
@@ -99,32 +97,33 @@ public class HTTPProtocol {
     public static void handle(Request request, Response response) throws IOException {
 
         System.out.println(request);
-        System.out.println(request.bodyAsText());
 
-        HashMap<String, String> headers = new HashMap<>();
+        Crud.handleConnection(request, response);
 
-        headers.put("Server", "TestTCP");
-        headers.put("Content-Type", "text/html");
-
-        response.writeStatus(StatusCode.OK);
-        response.writeHeaders(headers);
-
-        response.blankLine();
-
-        response.write(String.format("""
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="UTF-8"/>
-                    </head>
-                    <body>
-                        <h3>Olá Mundo! <br>User Agent: %s</h3>
-                        <h5 style='color: green;'>Flw mundo</h5>
-                    </body>
-                </html>""", request.getHeaders().get("User-Agent"))
-        );
-
-        response.blankLine();
+//        HashMap<String, String> headers = new HashMap<>();
+//
+//        headers.put("Server", "TestTCP");
+//        headers.put("Content-Type", "text/html");
+//
+//        response.writeStatus(StatusCode.OK);
+//        response.writeHeaders(headers);
+//        response.blankLine();
+//
+//
+//        response.write(String.format("""
+//                <!DOCTYPE html>
+//                <html>
+//                    <head>
+//                        <meta charset="UTF-8"/>
+//                    </head>
+//                    <body>
+//                        <h3>Ola Mundo! <br>User Agent: %s</h3>
+//                        <h5 style='color: green;'>Flw mundo</h5>
+//                    </body>
+//                </html>""", request.getHeaders().get("User-Agent"))
+//        );
+//
+//        response.blankLine();
     }
 
 }

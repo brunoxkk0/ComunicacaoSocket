@@ -1,7 +1,9 @@
 package br.dev.brunoxkk0.socket.http.core;
 
+import br.dev.brunoxkk0.socket.crud.Crud;
 import br.dev.brunoxkk0.socket.http.HTTPProtocol;
 import br.dev.brunoxkk0.socket.server.ServerClientConnection;
+import com.google.gson.Gson;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -41,6 +43,50 @@ public class Response {
 
     public void writeStatus(StatusCode status) throws IOException {
         write(String.format("%s %d %s", HTTPProtocol.VERSION, status.getCode(), status.getMessage()));
+    }
+
+    public void writeOKAndJsonContent(String json) throws IOException {
+        writeStatus(StatusCode.OK);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Server", "TestTCP");
+        headers.put("Content-Type", "application/json");
+        writeHeaders(headers);
+        blankLine();
+        write(json);
+        blankLine();
+    }
+
+    public void writeCreatedAndJsonContent(String json) throws IOException {
+        writeStatus(StatusCode.CREATED);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Server", "TestTCP");
+        headers.put("Content-Type", "application/json");
+        writeHeaders(headers);
+        blankLine();
+        write(json);
+        blankLine();
+    }
+
+    public void writeNotFound() throws IOException {
+        writeStatus(StatusCode.NOT_FOUND);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Server", "TestTCP");
+        headers.put("Content-Type", "application/json");
+        writeHeaders(headers);
+        blankLine();
+        write(Crud.gson.toJson(StatusCode.NOT_FOUND));
+        blankLine();
+    }
+
+    public void writeNoContent() throws IOException {
+        writeStatus(StatusCode.NO_CONTENT);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Server", "TestTCP");
+        headers.put("Content-Type", "application/json");
+        writeHeaders(headers);
+        blankLine();
+        write(Crud.gson.toJson(StatusCode.NO_CONTENT));
+        blankLine();
     }
 
 }

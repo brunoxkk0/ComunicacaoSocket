@@ -44,9 +44,9 @@ public class ServerClientConnection implements Runnable {
 
             reader = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
 
-
-            while (!reader.ready())
-                Thread.sleep(100);
+            // Corrigindo bug das Threads ficarem presas
+            // while (!reader.ready())
+            //    Thread.sleep(100);
 
 
             LOGGER.info("Leitor pronto para ler os dados...");
@@ -106,7 +106,7 @@ public class ServerClientConnection implements Runnable {
         int toReadNextLoop = Math.min(leftToRead, buffer.length);
 
         int read;
-        while (toReadNextLoop > 0 && (read = reader.read(buffer, 0, toReadNextLoop)) != -1) {
+        while (toReadNextLoop > 1 && (read = reader.read(buffer, 0, toReadNextLoop)) != -1) {
             stringBuilder.append(buffer, 0, read);
             leftToRead -= read;
             toReadNextLoop = Math.min(leftToRead, buffer.length);
