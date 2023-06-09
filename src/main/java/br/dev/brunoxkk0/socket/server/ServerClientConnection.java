@@ -44,9 +44,9 @@ public class ServerClientConnection implements Runnable {
 
             reader = new BufferedReader(new InputStreamReader(bufferedInputStream, StandardCharsets.UTF_8));
 
-
-            while (!reader.ready())
-                Thread.sleep(100);
+            // Corrigido bug das Threads ficarem presas
+            //while (!reader.ready())
+            //    Thread.sleep(100);
 
 
             LOGGER.info("Leitor pronto para ler os dados...");
