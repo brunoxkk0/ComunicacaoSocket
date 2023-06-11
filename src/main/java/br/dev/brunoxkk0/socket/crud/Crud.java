@@ -2,9 +2,11 @@ package br.dev.brunoxkk0.socket.crud;
 
 import br.dev.brunoxkk0.socket.http.core.Request;
 import br.dev.brunoxkk0.socket.http.core.Response;
+import br.dev.brunoxkk0.socket.http.core.StatusCode;
 import com.google.gson.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,8 +24,17 @@ public class Crud {
             case "GET" ->       GET_ITEMS(request, response);
             case "PUT" ->       UPDATE_ITEM(request, response);
             case "DELETE" ->    DELETE_ITEM(request, response);
+            case "OPTIONS" ->   OPTIONS(response);
         }
 
+    }
+
+    private static void OPTIONS(Response response) throws IOException {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+        response.writeStatus(StatusCode.OK);
+        response.writeHeaders(headers);
+        response.blankLine();
     }
 
     private static void DELETE_ITEM(Request request, Response response) throws IOException {
